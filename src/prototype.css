@@ -1352,6 +1352,24 @@ select:focus-visible,
 .mobile-app-viewport .profile-tool-grid button > svg:last-child, .mobile-app-viewport .profile-tool-grid small { display: block; }
 .mobile-app-viewport .profile-tool-grid button > svg:last-child { margin-left: auto; }
 
+/* The framed iPhone keeps its phone layout even when the outer browser is wide. */
+.mobile-app-viewport .screen-shell { width: 100%; margin: 0; padding: 24px 16px 102px; }
+.mobile-app-viewport .section-heading { margin-top: 27px; }
+.mobile-app-viewport .section-heading h2 { font-size: 21px; }
+.mobile-app-viewport .section-heading > button { font-size: 11px; }
+.mobile-app-viewport .journal-hero { align-items: flex-start; padding: 20px; }
+.mobile-app-viewport .journal-hero > div { align-items: flex-start; }
+.mobile-app-viewport .journal-hero h1 { font-size: 22px; }
+.mobile-app-viewport .journal-hero-tools { flex-direction: column; }
+.mobile-app-viewport .stat-row { padding: 14px 6px; }
+.mobile-app-viewport .stat-row b { font-size: 20px; }
+.mobile-app-viewport .journal-actions { display: grid; grid-template-columns: 1fr 1fr; }
+.mobile-app-viewport .journal-actions button { padding: 0 9px; font-size: 12px; }
+.mobile-app-viewport .journal-grid { grid-template-columns: 1fr; }
+.mobile-app-viewport .memory-card { display: grid; grid-template-columns: 130px minmax(0, 1fr); }
+.mobile-app-viewport .memory-card img { width: 130px; height: 100%; aspect-ratio: auto; }
+.mobile-app-viewport .memory-card.featured h3 { font-size: 15px; }
+
 .itinerary-ai-dock {
   position: fixed;
   z-index: 110;

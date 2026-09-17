@@ -1,67 +1,51 @@
-# Design QA
+# Design QA — Framed iPhone responsiveness
 
 ## Evidence
 
-- Source visual truth: `/Users/shuweijia/Downloads/截屏2026-09-17 14.36.09.png`.
-- Source pixels: 1080 × 1814. The source includes the full iPhone bezel and the Explore screen.
-- Implementation URL and live screenshot target: `http://localhost:4173/`, captured in the Codex in-app Browser after the change. The browser integration exposes the capture inline rather than as a filesystem artifact.
-- Supporting implementation screen artifact: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/20-home-v2-mobile.png` (390 × 844 px).
-- CSS device geometry: iPhone frame 511 × 968 CSS px with a 393 × 852 CSS px app screen; device scale is responsive and remained proportional in every tested viewport.
-- Density normalization: the source and browser captures were compared as full framed-phone compositions. App-owned content was additionally checked at the runtime's 393 × 852 CSS geometry so browser scaling did not create false spacing findings.
+- Source visual truth: `/var/folders/r1/jwxx9y5d4fl_3zqd47m2gr8m0000gn/T/TemporaryItems/NSIRD_screencaptureui_FXbX5P/截屏2026-09-17 16.44.52.png`.
+- Source pixels: 786 × 1560; state is the Journal screen, scrolled to Recent Journeys, with one user-created check-in.
+- Implementation: `http://127.0.0.1:4173/`.
+- Wide-host capture: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/journal-wide-seeded-after-fix.png`.
+- Narrow-host capture: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/journal-narrow-after-fix.png`.
+- Side-by-side comparison: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/journal-reference-vs-fixed.png`.
+- CSS phone screen: 393 × 852 px at deviceScaleFactor 1. Visual comparison capture used deviceScaleFactor 2 to match the reference's high-density raster.
 
-## States and viewports checked
+## Viewports and measured layout
 
-- Default public route at 1280 × 720: iPhone preview visible, device selector visible, `网页版本` control visible.
-- Default public route at 390 × 844: iPhone preview scales without horizontal clipping; both top-right controls remain reachable.
-- Web version at 1280 × 720: content expands to the available page width and the view switch does not cover the bookmark control.
-- Web version at 390 × 844: the header shifts below the fixed switch; the full page title and bookmark control remain visible.
-- State at handoff: switched back to the default iPhone preview.
+- Wide host: 1400 × 1200. Phone screen 393 × 852; Journal shell 393 px; shell padding 16 px on both sides; hero and Recent Journey cards 361 px wide.
+- Narrow host: 620 × 1200. Phone screen 393 × 852; Journal shell 393 px; shell padding 16 px on both sides; hero and Recent Journey cards 361 px wide.
+- Both hosts computed the Journal grid as one 361 px column and each memory card as `130px 229px`.
+- No Vite error overlay, console error, or page error was detected in either host viewport.
 
-## Full-view comparison evidence
+## Full-view and focused comparison
 
-- The default route now matches the source's framed-iPhone presentation rather than opening the responsive web layout first.
-- The iPhone bezel, live status bar, dynamic island, app viewport, home indicator, and fixed bottom navigation remain owned by the protected runtime and retain their calibrated proportions.
-- On portrait viewports, the phone uses nearly the full available width while keeping the bezel intact; there is no horizontal overflow or accidental crop.
-- On desktop viewports, the web mode expands cards into a two-column feed and increases the content ceiling to 1440 px, materially reducing unused side space.
+- The supplied reference and revised wide-host capture were placed in one side-by-side comparison image.
+- The phone content now reaches the same 16 px inner margin as the reference instead of inheriting the desktop `clamp(..., 4vw, 54px)` padding from the outer browser.
+- The Journal hero, statistics, actions, tools, section heading, and Recent Journey cards retain the phone layout when the outer browser is wider than 700 px.
+- The focused Recent Journeys region matches the reference's single-column horizontal-card anatomy, image crop, radii, typography hierarchy, ivory surface, and acid-green navigation state.
 
-## Focused region comparison evidence
+## Fidelity surfaces
 
-- Top-right preview controls were checked separately because they sit outside the phone frame. The iPhone/Pixel selector and the new web/iPhone view switch remain distinct, readable, and non-overlapping.
-- The web header was checked at both desktop and 390 px. Its title, profile, bookmark, search, people/budget control, and category filters remain visible after reserving space for the switch.
-- The Explore screen's typography, ivory/acid palette, Shanghai photography, card crop, metadata, and fixed navigation were visually checked against the supplied screenshot.
-
-## Findings
-
-- No actionable P0, P1, or P2 differences remain for the requested display-mode change.
-- Fonts and typography: Chinese system typography and hierarchy are preserved; no title clipping remains in the tested iPhone or web states.
-- Spacing and layout rhythm: the framed phone remains proportionally scaled, controls clear each other, and the web feed now uses the wider canvas.
-- Colors and visual tokens: ivory canvas, dark text, white surfaces, and acid-green emphasis remain consistent with the source.
-- Image quality: existing Shanghai assets remain sharp, cover their card slots correctly, and are not replaced by placeholders.
-- Copy and content: the public switch labels are `网页版本` and `iPhone 版本`; existing product copy remains unchanged.
-
-## Primary interactions tested
-
-- Load `/` and confirm iPhone is the default mode.
-- Switch iPhone → web and verify the responsive layout.
-- Switch web → iPhone and verify the framed preview returns.
-- Resize across 1280 × 720 and 390 × 844 while checking control reachability and layout clipping.
-
-## Console and runtime checks
-
-- Browser console errors/warnings: none.
-- `npm run check:runtime`: passed.
-- `npm run build`: passed.
-- `npm run test:sites`: 4/4 passed.
+- Fonts and typography: system Chinese type, weights, wrapping, and hierarchy match the existing local reference.
+- Spacing and layout rhythm: 16 px phone gutters and 361 px content width are identical at both tested outer widths.
+- Colors and tokens: existing ivory, dark ink, muted gray, and acid-green tokens are unchanged.
+- Image quality: original Shanghai assets are retained and use the same crops as the reference.
+- Copy and content: Journal labels and seeded check-in state match the reference; no product copy was changed.
 
 ## Comparison history
 
-1. P1 found: the public root rendered the responsive app directly while the requested default was iPhone. Fixed by making the framed iPhone runtime the root default and passing explicit framed-preview state into the prototype.
-2. P2 found: web mode used a narrower 1180 px ceiling and left avoidable side space. Fixed by raising the web-mode content ceiling to 1440 px.
-3. P2 found: the first desktop web capture showed the fixed mode switch competing with the bookmark control. Fixed by reserving right-side header space; the revised 1280 × 720 capture shows both controls separately.
-4. P2 found: applying that reservation at 390 px truncated the title. Fixed by placing the mobile web header below the switch and restoring normal horizontal padding; the revised capture shows the full title.
+1. P1: framed iPhone content inherited desktop viewport padding and collapsed to a narrow centered column on wide hosts. Fixed by scoping the full phone shell width and 16 px gutters to `.mobile-app-viewport`.
+2. P1: Recent Journeys inherited the desktop three-column grid on wide hosts. Fixed by scoping the single-column grid and horizontal card anatomy to `.mobile-app-viewport`.
+3. P2: Journal heading, hero, statistics, and action controls still depended on the outer 700 px media query. Fixed by adding explicit phone-container rules for those components.
+4. Post-fix evidence: wide and narrow hosts now produce identical measurements and visually equivalent phone layouts.
 
-## Follow-up polish
+## Verification
 
-- P3: a landscape desktop viewport will naturally show space around a portrait phone. The responsive web switch is the intended full-width alternative and is always available in the top-right corner.
+- `npm run check:runtime`: passed.
+- `npm run build`: passed.
+- `npm run test:sites`: 4/4 passed.
+- Primary interaction tested: open Journal from bottom navigation and scroll through Recent Journeys.
+
+No actionable P0, P1, or P2 findings remain for this responsive-layout defect.
 
 final result: passed
