@@ -67,5 +67,6 @@ No actionable P0, P1, or P2 findings remain for this responsive-layout defect.
 - Saturday evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/itinerary-saturday-after-fix.png`.
 - Sunday evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/itinerary-sunday-after-fix.png`.
 - All three panels rendered meaningful content, every itinerary image decoded with a non-zero natural width, and no 4xx response, console error, page error, or Vite error overlay was detected.
+- Re-encoded the five route and destination assets as 1000 px JPEGs; the route map dropped from 1.9 MB to 202 KB and destination images from 2.2–2.4 MB to 215–273 KB. A clean local navigation to the Sunday panel completed with all seven itinerary images decoded in about 1.1 seconds.
 
 final result: passed
