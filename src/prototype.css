@@ -1370,6 +1370,9 @@ select:focus-visible,
 .mobile-app-viewport .memory-card img { width: 130px; height: 100%; aspect-ratio: auto; }
 .mobile-app-viewport .memory-card.featured h3 { font-size: 15px; }
 
+/* Keep the simulated pointer above app-owned detail pages, sheets, and dialogs. */
+.device-screen > .mobile-cursor { z-index: 400; }
+
 .itinerary-ai-dock {
   position: fixed;
   z-index: 110;

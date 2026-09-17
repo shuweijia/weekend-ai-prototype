@@ -4,6 +4,7 @@
 
 - The deployable root route defaults to the template-owned iPhone preview. A fixed top-right control switches between the iPhone preview and the real responsive Web App; the responsive Web App remains single-column on phone/tablet and a two-pane map/itinerary workspace at 1024px and above.
 - Phone-preview layout rules must be scoped through `.mobile-app-viewport` and must not rely only on outer-browser media queries; the framed iPhone must render the same phone layout at every host viewport width.
+- Keep the template-owned simulated pointer above every app-owned detail page, modal, sheet, composer, and fixed control so its visual circle never disappears while clicks remain active.
 - `/mobile-qa` keeps the template-owned iPhone/Pixel frame for focused mobile visual checks and hides the public view-mode switch.
 - Visual direction follows the selected third concept: Apple-like restraint, map-first itinerary planning, cobalt blue route language, white frosted cards, and compact Chinese typography.
 - Core product loop must remain intact: discovery and preferences → AI itinerary and route edits → stay/bills/memos → team-up → check-in and guide sharing.

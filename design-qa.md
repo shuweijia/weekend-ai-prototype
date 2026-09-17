@@ -48,4 +48,13 @@
 
 No actionable P0, P1, or P2 findings remain for this responsive-layout defect.
 
+## Simulated-pointer regression check
+
+- Root cause: the template-owned `.mobile-cursor` was at `z-index: 80`, below activity navigation (`96`), modal surfaces (`100–150`), and the full-screen AI page (`220`). Pointer tracking and clicks continued to work, but the visible circle was covered.
+- Fix: `.device-screen > .mobile-cursor` is now kept at `z-index: 400`, above every app-owned secondary surface.
+- Activity-detail evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/cursor-activity-detail-after-fix.png` (`400 > 96`).
+- Check-in modal evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/cursor-modal-after-fix.png` (`400 > 100`).
+- Full-screen AI evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/cursor-ai-after-fix.png` (`400 > 220`).
+- All three states report the pointer as visible with opacity `1`; no page or console errors were detected.
+
 final result: passed
