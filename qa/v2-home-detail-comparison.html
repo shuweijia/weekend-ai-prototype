@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * { box-sizing: border-box; }
+      body { width: 1920px; height: 1120px; margin: 0; overflow: hidden; color: #111827; background: #edf1f5; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+      main { padding: 34px 40px; }
+      header { display: flex; align-items: end; justify-content: space-between; margin-bottom: 22px; }
+      h1 { margin: 0; font-size: 34px; letter-spacing: -1px; }
+      header p { margin: 0; color: #64748b; font-size: 17px; }
+      .grid { height: 945px; display: grid; grid-template-columns: 1.12fr 1fr; gap: 24px; }
+      .panel { position: relative; overflow: hidden; border: 1px solid rgba(148,163,184,.25); border-radius: 28px; background: white; box-shadow: 0 20px 48px rgba(15,23,42,.08); }
+      .label { position: absolute; z-index: 4; left: 18px; top: 18px; padding: 9px 14px; border-radius: 999px; color: white; background: rgba(15,23,42,.9); font-size: 15px; font-weight: 700; }
+      .reference { display: grid; place-items: center; padding: 62px 20px 20px; }
+      .reference img { width: 100%; height: 100%; object-fit: contain; }
+      .results { padding: 68px 22px 20px; }
+      .phones { height: 100%; display: flex; justify-content: center; gap: 24px; }
+      figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      figure img { width: 360px; height: 779px; object-fit: cover; object-position: top; border: 8px solid #111827; border-radius: 38px; box-shadow: 0 18px 38px rgba(15,23,42,.2); }
+      figcaption { color: #334155; font-size: 17px; font-weight: 700; }
+      .notes { position: absolute; left: 24px; right: 24px; bottom: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .notes span { padding: 11px; border-radius: 13px; color: #475569; background: #f5f8fc; text-align: center; font-size: 14px; }
+      .notes b { color: #087cf5; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header><h1>首页与地点详情 · 参考图 → 实现</h1><p>提取图三的图片优先卡片、蒙版地点信息与二级详情结构。</p></header>
+      <section class="grid">
+        <article class="panel reference"><span class="label">图三 · 视觉与页面关系参考</span><img src="file:///Users/shuweijia/Downloads/610e2258cbe2e3eb9d6d7e74ba4e5353.jpg" alt="旅行首页与地点详情参考" /></article>
+        <article class="panel results"><span class="label">实现结果 · 390 × 844</span><div class="phones"><figure><img src="20-home-v2-mobile.png" alt="新版探索首页" /><figcaption>大图地点卡片首页</figcaption></figure><figure><img src="21-place-detail-mobile.png" alt="地点二级详情页" /><figcaption>独立地点详情页</figcaption></figure></div><div class="notes"><span><b>搜索＋筛选</b> 同行人数与预算</span><span><b>图片蒙版</b> 地点、时间与价格</span><span><b>二级页面</b> 概览、攻略与评价</span></div></article>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>参考页面划分对照</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        width: 1920px;
+        height: 1120px;
+        margin: 0;
+        overflow: hidden;
+        color: #111827;
+        background: #eef2f7;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+      }
+      main { padding: 36px 40px 30px; }
+      header { display: flex; align-items: end; justify-content: space-between; margin-bottom: 24px; }
+      h1 { margin: 0; font-size: 34px; letter-spacing: -1px; }
+      header p { margin: 0; color: #64748b; font-size: 18px; }
+      .comparison { display: grid; grid-template-columns: 1.46fr 1fr; gap: 24px; height: 882px; }
+      .panel {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, .24);
+        border-radius: 28px;
+        background: white;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, .08);
+      }
+      .label {
+        position: absolute;
+        z-index: 2;
+        top: 18px;
+        left: 18px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        color: white;
+        background: rgba(15, 23, 42, .9);
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .source { display: grid; place-items: center; padding: 60px 18px 18px; }
+      .source img { width: 100%; height: 100%; object-fit: contain; }
+      .result { padding: 64px 22px 22px; }
+      .phones { display: flex; justify-content: center; gap: 22px; height: 100%; }
+      figure { margin: 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      figure img {
+        width: 342px;
+        height: 740px;
+        object-fit: cover;
+        object-position: top;
+        border: 8px solid #101827;
+        border-radius: 34px;
+        box-shadow: 0 18px 35px rgba(15, 23, 42, .18);
+      }
+      figcaption { color: #334155; font-size: 16px; font-weight: 650; }
+      footer {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+      footer span {
+        padding: 14px 16px;
+        border-radius: 16px;
+        color: #475569;
+        background: rgba(255,255,255,.84);
+        font-size: 15px;
+        text-align: center;
+      }
+      footer b { color: #087cff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>页面划分对照 · 参考图 → 可交互实现</h1>
+        <p>依据参考图的信息层级与导航关系进行产品化适配，并非逐像素复制示例 App。</p>
+      </header>
+      <section class="comparison">
+        <article class="panel source">
+          <span class="label">用户提供的页面结构说明</span>
+          <img src="file:///private/var/folders/r1/jwxx9y5d4fl_3zqd47m2gr8m0000gn/T/TemporaryItems/NSIRD_screencaptureui_MBV2oj/截屏2026-09-16%2015.46.56.png" alt="参考页面划分" />
+        </article>
+        <article class="panel result">
+          <span class="label">实现结果 · 390 × 844</span>
+          <div class="phones">
+            <figure>
+              <img src="10-reference-explore-viewport.png" alt="探索页实现" />
+              <figcaption>探索页：推荐流与分类</figcaption>
+            </figure>
+            <figure>
+              <img src="13-reference-plan-list.png" alt="计划页实现" />
+              <figcaption>计划页：卡片列表入口</figcaption>
+            </figure>
+          </div>
+        </article>
+      </section>
+      <footer>
+        <span><b>① 顶部</b> 问候 / 我的 / 收藏</span>
+        <span><b>② 中部</b> 分类 / 单列内容卡片</span>
+        <span><b>③ 底部</b> 探索 / 计划 / 组队 / 旅迹</span>
+        <span><b>④ 独立入口</b> 悬浮 AI 助手</span>
+      </footer>
+    </main>
+  </body>
+</html>

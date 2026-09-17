@@ -1,0 +1,100 @@
+{
+  "baseURL": "http://127.0.0.1:4173",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestsFailed": [],
+  "checks": [
+    {
+      "name": "image-led explore structure renders",
+      "status": "passed",
+      "detail": "weather in greeting + search/filter + 246px image-led cards"
+    },
+    {
+      "name": "shared navigation and independent AI entry render",
+      "status": "passed",
+      "detail": "286px 54px"
+    },
+    {
+      "name": "profile and journey are merged while favorites remain reachable",
+      "status": "passed",
+      "detail": "avatar and journey tab share one page + favorites"
+    },
+    {
+      "name": "search and category filters update the image feed",
+      "status": "passed",
+      "detail": {
+        "searchCount": 1,
+        "guideCount": 2
+      }
+    },
+    {
+      "name": "destination card opens a full secondary detail page",
+      "status": "passed",
+      "detail": "image card → detail page → tabs → back"
+    },
+    {
+      "name": "plan tab opens list before map detail",
+      "status": "passed",
+      "detail": "list → map/timeline → list"
+    },
+    {
+      "name": "floating AI assistant updates and opens the plan",
+      "status": "passed",
+      "detail": "AI assistant → visible route mutation"
+    },
+    {
+      "name": "preferences, lodging, bills and memo stay connected",
+      "status": "passed",
+      "detail": "preferences + lodging + AA + memo"
+    },
+    {
+      "name": "team creation and application remain closed-loop",
+      "status": "passed",
+      "detail": "join + publish visible team"
+    },
+    {
+      "name": "merged journey page publishes visible check-in and guide",
+      "status": "passed",
+      "detail": "profile tools + published items visible on one page"
+    },
+    {
+      "name": "mobile has named controls and no horizontal overflow",
+      "status": "passed",
+      "detail": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "desktop adapts the image-led home and place detail",
+      "status": "passed",
+      "detail": "527px 527px"
+    },
+    {
+      "name": "desktop keeps the same three-part hierarchy",
+      "status": "passed",
+      "detail": "835.188px 604.797px"
+    },
+    {
+      "name": "desktop has no horizontal overflow",
+      "status": "passed",
+      "detail": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      }
+    }
+  ],
+  "screenshots": [
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/20-home-v2-mobile.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/20-home-v2-mobile-full.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/22-merged-journey-mobile.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/21-place-detail-mobile.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/13-reference-plan-list.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/14-reference-plan-detail.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/22-merged-journey-published-mobile.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/23-home-v2-desktop.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/24-place-detail-desktop.png",
+    "/Users/shuweijia/找工作/笔试/美团面试/weekend-ai-prototype/qa/25-plan-detail-desktop.png"
+  ]
+}
