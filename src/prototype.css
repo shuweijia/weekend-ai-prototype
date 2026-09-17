@@ -1143,6 +1143,37 @@ select:focus-visible,
   font-weight: 680;
 }
 .plan-day-tabs button.active { color: var(--ink); border-bottom-color: var(--acid); }
+.plan-overview { display: grid; gap: 18px; }
+.overview-stats {
+  padding: 14px 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+}
+.overview-stats span { display: grid; gap: 3px; text-align: center; }
+.overview-stats span + span { border-left: 1px solid var(--line); }
+.overview-stats b { font-size: 21px; }
+.overview-stats small { color: var(--muted); font-size: 10px; }
+.overview-days { display: grid; gap: 12px; }
+.overview-days > button {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-items: stretch;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+}
+.overview-days img { width: 116px; height: 100%; min-height: 112px; object-fit: cover; }
+.overview-days span { min-width: 0; padding: 14px; display: grid; align-content: center; gap: 7px; }
+.overview-days small { color: var(--muted); font-size: 10px; }
+.overview-days b { font-size: 14px; line-height: 1.4; }
+.overview-days em { display: flex; align-items: center; gap: 4px; color: #536700; font-size: 10px; font-style: normal; font-weight: 700; }
 .transport-card {
   margin: 10px 0 12px;
   padding: 13px;

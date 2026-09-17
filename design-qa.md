@@ -57,4 +57,15 @@ No actionable P0, P1, or P2 findings remain for this responsive-layout defect.
 - Full-screen AI evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/cursor-ai-after-fix.png` (`400 > 220`).
 - All three states report the pointer as visible with opacity `1`; no page or console errors were detected.
 
+## Itinerary tabs and image recovery
+
+- Reproduced the inactive Overview and Sunday controls: both were static buttons while Saturday content was hard-coded.
+- Added three stateful tab panels with distinct Overview, Saturday, and Sunday content.
+- Added canonical stop-image resolution and a final image-error fallback so stale image URLs stored by older browser sessions are repaired automatically.
+- Regression test seeded all three Saturday stops with deliberately missing image URLs before reload; the saved data was repaired to bundled assets without issuing a failed image request.
+- Overview evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/itinerary-overview-after-fix.png`.
+- Saturday evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/itinerary-saturday-after-fix.png`.
+- Sunday evidence: `/Users/shuweijia/找工作/美团面试/weekend-ai-prototype/qa/itinerary-sunday-after-fix.png`.
+- All three panels rendered meaningful content, every itinerary image decoded with a non-zero natural width, and no 4xx response, console error, page error, or Vite error overlay was detected.
+
 final result: passed

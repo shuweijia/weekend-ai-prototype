@@ -10,6 +10,7 @@ import { KeyboardInput, MobileScroll, useKeyboardInsets } from "./mobile";
 
 type Tab = "explore" | "itinerary" | "team" | "journal";
 type Page = Tab | "favorites" | "activity" | "companions" | "bills" | "memos";
+type PlanView = "overview" | "saturday" | "sunday";
 type ModalName = "preferences" | "stay" | "bills" | "memo" | "team" | "checkin" | "guide" | "manualPlan" | null;
 type Stop = { id: number; name: string; time: string; tag: string; image: string; cost: number };
 type Expense = { id: number; title: string; amount: number; payer: string };
@@ -23,8 +24,19 @@ const activities = [
   { id: 1, name: "西岸美术馆", type: "展览", time: "10:00–12:00", cost: 80, image: "/assets/weekend/west-bund-museum.png", reason: "室内避暑 · 艺术偏好 94%", distance: "地铁 32 分钟", location: "上海 · 徐汇滨江", address: "龙腾大道 2600 号", description: "在黄浦江畔慢慢看一场展，把午后的光影和艺术都留给自己。学生证可享优惠，馆内动线舒适，也适合第一次约见的周末搭子。" },
   { id: 2, name: "龙华会周末市集", type: "市集", time: "12:30–14:00", cost: 58, image: "/assets/weekend/longhua-hui.png", reason: "午餐顺路 · 适合 3 人", distance: "步行 900 米", location: "上海 · 龙华会", address: "龙华路 2778 号", description: "从手作摊位逛到独立咖啡，午餐和小众好物一次解决。市集就在地铁上盖，雨天也能轻松抵达。" },
   { id: 3, name: "徐汇滨江日落散步", type: "城市漫步", time: "17:30–19:00", cost: 0, image: "/assets/weekend/xuhui-riverside.png", reason: "AI 已避开高温时段", distance: "骑行 1.8 公里", location: "上海 · 徐汇滨江", address: "龙腾大道滨江步道", description: "沿着江边从艺术区走到日落观景台，晚风、骑行和城市天际线都刚刚好。路线平缓，新手也能自在完成。" },
+  { id: 5, name: "衡山路街区早午餐", type: "早午餐", time: "10:30–12:00", cost: 72, image: "/assets/weekend/longhua-hui.png", reason: "周日上午轻松出发", distance: "地铁 18 分钟", location: "上海 · 衡复风貌区", address: "衡山路 8 号", description: "从一顿松弛的早午餐开始周日，在梧桐街区里慢慢醒来，为接下来的城市漫步补充体力。" },
+  { id: 6, name: "武康路建筑漫步", type: "城市漫步", time: "13:00–15:00", cost: 0, image: "/assets/weekend/xuhui-riverside.png", reason: "树荫路线 · 少走回头路", distance: "步行 2.4 公里", location: "上海 · 武康路", address: "武康路历史文化名街", description: "沿着武康路和安福路看老建筑、逛小店，路线以林荫路为主，适合边走边拍。" },
+  { id: 7, name: "上海图书馆东馆", type: "文化", time: "15:30–17:30", cost: 0, image: "/assets/weekend/west-bund-museum.png", reason: "午后室内避暑", distance: "地铁 25 分钟", location: "上海 · 浦东新区", address: "合欢路 300 号", description: "把周末最后一站留给安静的阅读空间，在开阔明亮的建筑里休息，也为两天行程自然收尾。" },
 ];
-const initialStops: Stop[] = activities.map((a) => ({ id: a.id, name: a.name, time: a.time, tag: a.type, image: a.image, cost: a.cost }));
+const initialStops: Stop[] = activities.slice(0, 3).map((a) => ({ id: a.id, name: a.name, time: a.time, tag: a.type, image: a.image, cost: a.cost }));
+const sundayStops: Stop[] = activities.slice(3).map((a) => ({ id: a.id, name: a.name, time: a.time, tag: a.type, image: a.image, cost: a.cost }));
+const resolveStopImage = (stop: Stop) => activities.find((activity) => activity.id === stop.id)?.image || stop.image || "/assets/weekend/xuhui-riverside.png";
+const repairBrokenImage = (event: React.SyntheticEvent<HTMLImageElement>) => {
+  const image = event.currentTarget;
+  if (image.dataset.fallbackApplied === "true") return;
+  image.dataset.fallbackApplied = "true";
+  image.src = "/assets/weekend/xuhui-riverside.png";
+};
 const initialExpenses: Expense[] = [
   { id: 1, title: "西岸美术馆门票", amount: 240, payer: "我" },
   { id: 2, title: "共享单车", amount: 18, payer: "林夕" },
@@ -85,6 +97,12 @@ export default function Prototype({ framedPreview = false }: { framedPreview?: b
   const [customTeams, setCustomTeams] = usePersistentState<CustomTeam[]>("weekend-custom-teams", []);
   const [journalEntries, setJournalEntries] = usePersistentState<JournalEntry[]>("weekend-journal-entries", []);
   const total = expenses.reduce((sum, item) => sum + item.amount, 0) + (hotelPrices[hotel] ?? 0);
+  useEffect(() => {
+    setStops((current) => {
+      const repaired = current.map((stop) => ({ ...stop, image: resolveStopImage(stop) }));
+      return repaired.some((stop, index) => stop.image !== current[index]?.image) ? repaired : current;
+    });
+  }, [setStops]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: "auto" }); }, [page, planDetail]);
   const showToast = (message: string) => { setToast(message); window.setTimeout(() => setToast(""), 2200); };
   const applyAi = (prompt = aiText) => {
@@ -127,7 +145,7 @@ export default function Prototype({ framedPreview = false }: { framedPreview?: b
       {page !== "activity" && !(page === "itinerary" && planDetail) && <CommonHeader {...pageTitles[page]} page={page} detail={page === "itinerary" && planDetail} onProfile={() => navigate("journal")} onFavorites={() => setPage("favorites")} onBack={() => { if (planDetail) setPlanDetail(false); else setPage(tab); }} />}
       {page === "explore" && <ExploreScreen onOpen={(activity, guide) => openActivity(activity, "explore", guide)} onPlan={() => { setRouteReady(true); navigate("itinerary"); setPlanDetail(true); showToast("AI 行程已生成"); }} onPreferences={() => setModal("preferences")} saved={saved} setSaved={setSaved} budget={budget} people={people} likes={likes} entries={journalEntries} />}
       {page === "itinerary" && !planDetail && <PlanListScreen stops={stops} hotel={hotel} people={people} budget={budget} onOpen={() => setPlanDetail(true)} onCreate={() => setModal("manualPlan")} />}
-      {page === "itinerary" && planDetail && <ItineraryScreen stops={stops} setStops={setStops} expenses={expenses} memos={memos} total={total} weatherAlert={weatherAlert} setWeatherAlert={setWeatherAlert} openModal={setModal} routeReady={routeReady} onExplore={() => navigate("explore")} showToast={showToast} budget={budget} people={people} aiNote={aiNote} onBack={() => setPlanDetail(false)} onOpenAi={() => setAiOpen(true)} onOpenStop={(stop) => openActivity(activities.find((activity) => activity.id === stop.id) ?? activities[0], "itinerary")} />}
+      {page === "itinerary" && planDetail && <InteractiveItineraryScreen stops={stops} setStops={setStops} expenses={expenses} memos={memos} total={total} weatherAlert={weatherAlert} setWeatherAlert={setWeatherAlert} openModal={setModal} routeReady={routeReady} onExplore={() => navigate("explore")} showToast={showToast} budget={budget} people={people} aiNote={aiNote} onBack={() => setPlanDetail(false)} onOpenAi={() => setAiOpen(true)} onOpenStop={(stop) => openActivity(activities.find((activity) => activity.id === stop.id) ?? activities[0], "itinerary")} />}
       {page === "team" && <TeamScreen joined={joined} openCreate={() => setModal("team")} customTeams={customTeams} onOpen={(team) => openActivity(activities.find((activity) => activity.id === team.activityId) ?? activities[0], "team", communityGuides.find((guide) => guide.activityId === team.activityId) ?? null, team)} />}
       {page === "journal" && <JournalScreen checkins={checkins} guides={guides} openCheckin={() => setModal("checkin")} openGuide={() => setModal("guide")} saved={saved.length} showToast={showToast} entries={journalEntries} onPreferences={() => setModal("preferences")} onCompanions={() => setPage("companions")} onBills={() => setPage("bills")} onMemo={() => setPage("memos")} />}
       {page === "companions" && <CompanionHistoryScreen joined={joined} customTeams={customTeams} onOpen={(team) => openActivity(activities.find((activity) => activity.id === team.activityId) ?? activities[0], "companions", communityGuides.find((guide) => guide.activityId === team.activityId) ?? null, team)} />}
@@ -204,7 +222,59 @@ function ActivityDetailScreen({ activity, guide, team, checkins, joined, setJoin
   return <section className="activity-detail-screen"><div className="activity-detail-nav"><button aria-label="返回上一页" onClick={onBack}><ChevronLeftIcon /></button><button aria-label={isSaved ? "取消收藏" : "收藏地点"} className={isSaved ? "saved" : ""} onClick={() => setSaved((ids) => isSaved ? ids.filter((id) => id !== activity.id) : [...ids, activity.id])}><BookmarkIcon /></button></div><div className="activity-detail-hero"><img src={activity.image} alt={activity.name} draggable="false" /></div><div className="activity-detail-content"><div className="activity-detail-title"><div><span>{activity.type} · AI 匹配 94%</span><h1>{activity.name}</h1><p><SewingPinFilledIcon /> {activity.address}</p></div><strong><StarFilledIcon /> 4.8</strong></div><div className="activity-facts"><div><SewingPinFilledIcon /><span><small>位置</small><b>{activity.location.replace("上海 · ", "")}</b></span></div><div><ClockIcon /><span><small>开放</small><b>{activity.time}</b></span></div><div><SunIcon /><span><small>天气</small><b>晴 · 27°C</b></span></div></div><div className="activity-detail-tabs" role="tablist" aria-label="地点详情分类"><button role="tab" aria-selected={section === "overview"} className={section === "overview" ? "active" : ""} onClick={() => setSection("overview")}>概览</button><button role="tab" aria-selected={section === "guide"} className={section === "guide" ? "active" : ""} onClick={() => setSection("guide")}>攻略</button><button role="tab" aria-selected={section === "team"} className={section === "team" ? "active" : ""} onClick={() => setSection("team")}>组队</button><button role="tab" aria-selected={section === "reviews"} className={section === "reviews" ? "active" : ""} onClick={() => setSection("reviews")}>评价</button></div>{section === "overview" && <div className="detail-section"><p>{activity.description}</p><div className="detail-section-heading"><h2>现场照片</h2><span>{gallery.length} 张</span></div><div className="activity-gallery">{gallery.map((image, index) => <figure className={index < checkinPhotos.length ? "checkin-photo" : ""} key={`${image}-${index}`}><img src={image} alt={`${activity.name}现场照片${index + 1}`} draggable="false" />{index < checkinPhotos.length && <figcaption>佳佳打卡</figcaption>}</figure>)}</div></div>}{section === "guide" && <div className="detail-section detail-guide synced-guide"><div className="guide-author"><span className="avatar">{matchingGuide.author.slice(0, 1)}</span><span><b>@{matchingGuide.author}</b><small>亲自去过 · 用户分享</small></span></div><h2>{matchingGuide.title}</h2><p>{matchingGuide.note}</p><article><b>地点与卡片完全同步</b><p>{activity.name} · {activity.address} · {activity.time}</p></article><article><b>顺路这样玩</b><p>结束后可加入 AI 路线，自动衔接下一站并减少折返。</p></article></div>}{section === "team" && <div className="detail-section team-detail-section">{matchingTeam ? <><div className="team-detail-heading"><div className="member-stack"><span>{matchingTeam.host.slice(0, 1)}</span><span>佳</span><span>+</span></div><span className="spots">还差 {Math.max(0, matchingTeam.capacity - matchingTeam.memberCount - (joined ? 1 : 0))} 人</span></div><h2>{matchingTeam.name}</h2><p>{matchingTeam.note}</p><div className="team-detail-facts"><div><PersonIcon /><span><small>发起人</small><b>{matchingTeam.host} · 已实名</b></span></div><div><CalendarIcon /><span><small>集合时间</small><b>{matchingTeam.time}</b></span></div><div><SewingPinFilledIcon /><span><small>集合地点</small><b>{matchingTeam.meeting}</b></span></div></div><div className="team-tags">{matchingTeam.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><button className={`team-join-button ${joined ? "joined" : ""}`} onClick={() => { setJoined(!joined); showToast(joined ? "已退出这次同行" : "已加入组队，记录已同步到我的同行"); }}>{joined ? <><CheckIcon /> 已加入，查看同行记录</> : <><GroupIcon /> 申请加入</>}</button></> : <div className="empty-inline"><GroupIcon /><h2>还没有人发起组队</h2><p>你可以从组队页为这个地点发起同行。</p></div>}</div>}{section === "reviews" && <div className="detail-section detail-reviews">{checkins.map((entry) => <div className="my-checkin-review" key={entry.id}><span className="avatar">佳</span><p><b>佳佳 · 刚刚打卡</b><br />{entry.note || entry.title}{entry.image && <small><SewingPinFilledIcon /> 已上传 1 张现场照片</small>}</p></div>)}<div><span className="avatar">林</span><p><b>林同学 · 5.0</b><br />图片很好拍，公共交通也方便，和朋友慢慢逛很舒服。</p></div><div><span className="avatar">陈</span><p><b>陈默 · 4.8</b><br />路线安排合理，傍晚接滨江日落刚好。</p></div></div>}</div></section>;
 }
 
-function ItineraryScreen({ stops, setStops, expenses, memos, total, weatherAlert, setWeatherAlert, openModal, routeReady, onExplore, budget, people, aiNote, onBack, onOpenAi, onOpenStop }: { stops: Stop[]; setStops: React.Dispatch<React.SetStateAction<Stop[]>>; expenses: Expense[]; memos: Memo[]; total: number; weatherAlert: boolean; setWeatherAlert: (value: boolean) => void; openModal: (name: ModalName) => void; routeReady: boolean; onExplore: () => void; showToast: (message: string) => void; budget: number; people: number; aiNote: string; onBack: () => void; onOpenAi: () => void; onOpenStop: (stop: Stop) => void }) {
+type ItineraryScreenProps = { stops: Stop[]; setStops: React.Dispatch<React.SetStateAction<Stop[]>>; expenses: Expense[]; memos: Memo[]; total: number; weatherAlert: boolean; setWeatherAlert: (value: boolean) => void; openModal: (name: ModalName) => void; routeReady: boolean; onExplore: () => void; showToast: (message: string) => void; budget: number; people: number; aiNote: string; onBack: () => void; onOpenAi: () => void; onOpenStop: (stop: Stop) => void };
+
+function InteractiveItineraryScreen({ stops, setStops, expenses, memos, total, weatherAlert, setWeatherAlert, openModal, routeReady, onExplore, budget, people, aiNote, onBack, onOpenAi, onOpenStop }: ItineraryScreenProps) {
+  const [planView, setPlanView] = useState<PlanView>("saturday");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [draft, setDraft] = useState({ name: "", time: "", cost: "" });
+  const dayStops = planView === "sunday" ? sundayStops : stops;
+  const visibleMapStops = planView === "overview" ? stops : dayStops;
+  const saturdayCost = stops.reduce((sum, stop) => sum + stop.cost, 0);
+  const sundayCost = sundayStops.reduce((sum, stop) => sum + stop.cost, 0);
+  const transportNotes = planView === "sunday"
+    ? ["衡山路站出发 · 步行约 6 分钟", "沿林荫街区步行约 18 分钟", "从交通大学站乘地铁约 25 分钟"]
+    : ["龙华中路地铁站出发 · 地铁 12 号线约 18 分钟", "从上一站步行约 12 分钟", "从上一站骑行约 18 分钟"];
+  const beginEdit = (stop: Stop) => { setEditingId(stop.id); setDraft({ name: stop.name, time: stop.time, cost: String(stop.cost) }); };
+  const saveEdit = (id: number) => {
+    setStops((current) => current.map((stop) => stop.id === id ? { ...stop, name: draft.name.trim() || stop.name, time: draft.time.trim() || stop.time, cost: Number(draft.cost) || 0 } : stop));
+    setEditingId(null);
+  };
+  const switchView = (view: PlanView) => { setPlanView(view); setEditingId(null); };
+
+  return <section className="itinerary-screen video-plan-screen">
+    <div className="map-pane">
+      <img className="map-image" src="/assets/weekend/map-route.png" alt="上海徐汇周末路线地图" draggable="false" onError={repairBrokenImage} />
+      <div className="plan-map-header"><button aria-label="返回计划列表" onClick={onBack}><ChevronLeftIcon /></button><b>徐汇滨江周末计划</b><button aria-label="查看AI对话记录" onClick={onOpenAi}><MagicWandIcon /></button></div>
+      {visibleMapStops.slice(0, 3).map((stop, index) => <button key={`${planView}-${stop.id}`} className={`map-stop stop-${index + 1}`} onClick={() => onOpenStop(stop)}><img src={resolveStopImage(stop)} alt="" draggable="false" onError={repairBrokenImage} /><span><b>{index + 1}. {stop.name}</b><small>{stop.time}</small></span></button>)}
+    </div>
+    <div className="plan-pane expanded">
+      <div className="drag-handle" />
+      <div className="plan-day-tabs" role="tablist" aria-label="行程日期">
+        <button role="tab" aria-selected={planView === "overview"} className={planView === "overview" ? "active" : ""} onClick={() => switchView("overview")}>总览</button>
+        <button role="tab" aria-selected={planView === "saturday"} className={planView === "saturday" ? "active" : ""} onClick={() => switchView("saturday")}>9.19 周六</button>
+        <button role="tab" aria-selected={planView === "sunday"} className={planView === "sunday" ? "active" : ""} onClick={() => switchView("sunday")}>9.20 周日</button>
+      </div>
+      {!routeReady || stops.length === 0 ? <EmptyPlan onExplore={onExplore} /> : planView === "overview" ? <div className="plan-overview" role="tabpanel">
+        <header className="plan-heading"><div><span className="eyebrow"><MagicWandIcon /> AI 已排好两天路线</span><h1>上海周末 · 2 天</h1><p>6 个地点 · 文化、街区与滨江路线，人均预计 ¥{Math.round((saturdayCost + sundayCost) / people)}。</p></div><button className="icon-button" aria-label="调整行程偏好" onClick={() => openModal("preferences")}><Pencil2Icon /></button></header>
+        <div className="overview-stats"><span><b>2</b><small>天行程</small></span><span><b>6</b><small>个地点</small></span><span><b>24.8</b><small>探索公里</small></span></div>
+        <div className="overview-days">
+          <button onClick={() => switchView("saturday")}><img src={resolveStopImage(stops[0])} alt="周六西岸路线" onError={repairBrokenImage} /><span><small>9.19 周六 · {stops.length} 个地点</small><b>西岸看展、龙华会与滨江日落</b><em>查看周六路线 <ChevronRightIcon /></em></span></button>
+          <button onClick={() => switchView("sunday")}><img src={resolveStopImage(sundayStops[1])} alt="周日城市漫步路线" onError={repairBrokenImage} /><span><small>9.20 周日 · {sundayStops.length} 个地点</small><b>衡山路早午餐、武康路与阅读时光</b><em>查看周日路线 <ChevronRightIcon /></em></span></button>
+        </div>
+      </div> : <div role="tabpanel">
+        <header className="plan-heading"><div><span className="eyebrow"><MagicWandIcon /> AI 已综合天气与预算</span><h1>{planView === "sunday" ? "9.20 周日" : "9.19 周六"} · 上海</h1><p>{planView === "sunday" ? "上午漫步街区、午后转入室内，路线更轻松" : aiNote}，人均 ¥{Math.round((planView === "sunday" ? sundayCost : total) / people)} / ¥{budget}。</p></div><button className="icon-button" aria-label="调整行程偏好" onClick={() => openModal("preferences")}><Pencil2Icon /></button></header>
+        <div className="plan-details">
+          {planView === "saturday" && weatherAlert && <button className="weather-alert" onClick={() => setWeatherAlert(false)}><SunIcon /><span><b>下午高温，已调整路线</b><small>点此确认，或继续告诉 AI 怎么改</small></span><Cross2Icon /></button>}
+          <div className="timeline">{dayStops.map((stop, index) => <div className="timeline-stop" key={`${planView}-${stop.id}`}><div className="timeline-item"><div className="timeline-index">{index + 1}</div><button className="timeline-place" onClick={() => onOpenStop(stop)}><img src={resolveStopImage(stop)} alt={stop.name} draggable="false" onError={repairBrokenImage} /><span className="timeline-copy"><span>{stop.tag}</span><h3>{stop.name}</h3><p><ClockIcon /> {stop.time} · {stop.cost ? `¥${stop.cost}` : "免费"}</p></span></button><button className="small-button" onClick={() => planView === "saturday" ? beginEdit(stop) : onOpenStop(stop)}>{planView === "saturday" ? "编辑" : "查看"}</button><small className="transport-note"><RocketIcon /> {transportNotes[index] ?? "从上一站步行约 15 分钟"}</small></div>{planView === "saturday" && editingId === stop.id && <div className="stop-editor"><label>地点名称<KeyboardInput value={draft.name} onChange={(event) => setDraft((value) => ({ ...value, name: event.target.value }))} /></label><label>游玩时间<KeyboardInput value={draft.time} onChange={(event) => setDraft((value) => ({ ...value, time: event.target.value }))} /></label><label>预计花费<KeyboardInput inputMode="numeric" value={draft.cost} onChange={(event) => setDraft((value) => ({ ...value, cost: event.target.value }))} /></label><div><button onClick={() => setEditingId(null)}>取消</button><button className="primary-button" onClick={() => saveEdit(stop.id)}>保存修改</button></div></div>}</div>)}</div>
+          <div className="plan-tools"><button onClick={() => openModal("bills")}><BackpackIcon /><span><b>本次账单 ¥{total}</b><small>{expenses.length} 笔 · {people} 人 AA</small></span><ChevronRightIcon /></button><button onClick={() => openModal("memo")}><FileTextIcon /><span><b>本次备忘 {memos.length} 条</b><small>{memos.filter((memo) => !memo.done).length} 条待办</small></span><ChevronRightIcon /></button></div>
+        </div>
+      </div>}
+    </div>
+  </section>;
+}
+
+function ItineraryScreen({ stops, setStops, expenses, memos, total, weatherAlert, setWeatherAlert, openModal, routeReady, onExplore, budget, people, aiNote, onBack, onOpenAi, onOpenStop }: ItineraryScreenProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState({ name: "", time: "", cost: "" });
   const transportNotes = ["龙华中路地铁站出发 · 地铁 12 号线约 18 分钟", "从上一站步行约 12 分钟", "从上一站骑行约 18 分钟"];
